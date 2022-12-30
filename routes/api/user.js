@@ -3,8 +3,8 @@ const route = express.Router();
 const User = require('../../module/UserSchema');
 const gravatar = require('gravatar');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const { check, validationResult } = require('express-validator');
-
 
 route.post('/',
     [
@@ -45,8 +45,21 @@ route.post('/',
             console.log(user);
             //save to db
             user.save();
-            res.send("User Registed");
-            next();
+           // res.send("User Registed");
+            const payload = {
+                user : {
+                    id: user.id
+                }
+            }
+            jwt.sign(payload,
+                process.env.JWT_TOKEN, {
+                    expiresIn:process.env.EXP_TIME
+            }, (err,result)=>{
+            if(err){
+                res.send('invalid token')
+            } 
+            res.json(result);
+            })
         } catch (err) {
             console.log(err);
             res.status(500).send("Server Error");
