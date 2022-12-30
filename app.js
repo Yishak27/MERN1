@@ -18,7 +18,9 @@ app.use('/api/profile', require('./routes/api/profile'));
 app.use('/api/posts', require('./routes/api/posts'));
 
 mongoose.set('strictQuery', false);
-mongoose.connect(process.env.MONGO_URL, { useNewUrlParser: true }, (err => {
+mongoose.connect(process.env.MONGO_URL, 
+    { useNewUrlParser: true}, 
+    (err => {
     if (err) {
         console.log("error on db connection");
     } else {
