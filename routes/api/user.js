@@ -52,13 +52,12 @@ route.post('/',
                 }
             }
             jwt.sign(payload,
-                process.env.JWT_TOKEN, {
-                    expiresIn:process.env.EXP_TIME
-            }, (err,result)=>{
-            if(err){
-                res.send('invalid token')
-            } 
-            res.json(result);
+                process.env.JWT_TOKEN, 
+                {
+                expiresIn: process.env.EXP_TIME
+            }, (err, token) => {
+                if (err) throw err
+                res.json(token);
             })
         } catch (err) {
             console.log(err);
