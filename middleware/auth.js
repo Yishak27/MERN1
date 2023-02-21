@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+
 //middle ware for authorization of the use by token
 module.exports = (req, res, next) => {
     const token = req.header('x-access-token');

@@ -41,24 +41,17 @@ route.post('/',
             //encript password
             const salt = await bcrypt.genSalt(10);
             user.password = await bcrypt.hash(password, salt);
-            console.log(user.password);
-            console.log(user);
-            //save to db
-            user.save();
-           // res.send("User Registed");
+            // res.send("User Registed");
             const payload = {
-                user : {
-                    id: user.id
-                }
+                id: user.id
             }
-            jwt.sign(payload,
-                process.env.JWT_TOKEN, 
-                {
+            const token = await jwt.sign(payload, process.env.JWT_TOKEN, {
                 expiresIn: process.env.EXP_TIME
-            }, (err, token) => {
-                if (err) throw err
-                res.json(token);
             })
+            //save to db
+            user.token = token;
+            user.save();
+            res.send(user);
         } catch (err) {
             console.log(err);
             res.status(500).send("Server Error");
@@ -66,7 +59,7 @@ route.post('/',
     })
 
 route.get('/', async (req, res) => {
-    let user = await User.find()
+    let user = await User.find().select('-password');
     res.send(user);
 })
 
