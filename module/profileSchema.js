@@ -2,7 +2,7 @@ const mongo = require('mongoose');
 const profileSchema = new mongo.Schema({
     user:{
         type:mongo.Schema.Types.ObjectId,
-        ref:"user"
+        ref:"users"
     },
     company:{
         type:String

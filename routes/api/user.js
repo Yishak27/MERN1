@@ -38,16 +38,16 @@ route.post('/',
                 avatar,
             });
 
-            //encript password
+            //encrypt password
             const salt = await bcrypt.genSalt(10);
             user.password = await bcrypt.hash(password, salt);
-            // res.send("User Registed");
             const payload = {
-                id: user.id
+                user: { id: user.id }
             }
-            const token = await jwt.sign(payload, process.env.JWT_TOKEN, {
-                expiresIn: process.env.EXP_TIME
-            })
+            const token = await jwt.sign(payload, process.env.JWT_TOKEN)
+            //     , {
+            //     expiresIn: process.env.EXP_TIME
+            // })
             //save to db
             user.token = token;
             user.save();

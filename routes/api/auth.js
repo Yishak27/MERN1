@@ -24,7 +24,6 @@ route.post('/',
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array() });
         }
-
         const {email, password } = req.body;
         try {
             let user = await User.findOne({ email });
@@ -36,19 +35,7 @@ route.post('/',
             if (!isValid) {
                 res.send({ errors: [{ msg: 'Invalid Credential' }] });
             }
-            const payload = {
-                user: {
-                    id: user.id
-                }
-            }
-            jwt.sign(payload,
-                process.env.JWT_TOKEN,
-                {
-                    expiresIn: process.env.EXP_TIME
-                }, (err, token) => {
-                    if (err) throw err
-                    res.json(token);
-                })
+            res.json(user.token);
         } catch (err) {
             console.log(err);
             res.status(500).send("Server Error");
