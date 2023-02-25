@@ -115,9 +115,9 @@ route.get('/', auth, async (req, res) => {
 route.post('/experience', auth, [check('title', 'title is required').not().isEmpty()], async (req, res) => {
     try {
         const errors = validationResult(req);
-        if (!errors.isEmpty()) return res.status(404).send({ errors : errors});
+        if (!errors.isEmpty()) return res.status(404).send({ errors: errors });
         const { title, company, location, from, to, current, description } = req.body;
-        
+
         const updates = [{
             title: title, company: company, location: location, from: from, to: to, current: current, description: description
         }];
@@ -139,12 +139,16 @@ route.post('/experience', auth, [check('title', 'title is required').not().isEmp
 //deleting the experience
 route.delete('/experiences/:id', auth, async (req, res) => {
     try {
-        const profiles = await Profile.findOne({user:req.user.id});
-        if(!profiles) return res.status(400).send({msg:'No profile for this user'});
-        const experience = profiles.experience;
-        console.log(experience, req.params.id);
-        if(!experience) return res.send({msg:'No Experience for this user'});
-    } 
+        const profiles = await Profile.findOne({ user: req.user.id });
+        if (!profiles) return res.status(400).send({ msg: 'No profile for this user' });
+        const remove = profiles.experience
+            .map(item => item.id)
+            .indexOf(req.params.id);
+        if (remove === -1) return res.send({ msg: 'No Experience for this user' });
+        profiles.experience.slice(remove, 1);
+        profiles.save();
+        res.send({ msg: 'experience removed' })
+    }
     catch (err) {
         console.log(err)
         return res.status(500).send({ msg: 'Server Error' })
