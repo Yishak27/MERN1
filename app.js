@@ -10,10 +10,14 @@ app.use(express.json({ extended: false }))
 
 const port = process.env.PORT;
 
-app.use('/api/user', require('./routes/api/user'));
-app.use('/api/auth', require('./routes/api/auth'));
-app.use('/api/profile', require('./routes/api/profile'));
-app.use('/api/posts', require('./routes/api/posts'));
+app.use((req, res, next)=>{
+    console.log(`Url Request is ${req.method} and end point of ${req.url}`);
+    next()
+});
+app.use('/API/user', require('./routes/api/user'));
+app.use('/API/auth', require('./routes/api/auth'));
+app.use('/API/profile', require('./routes/api/profile'));
+app.use('/API/posts', require('./routes/api/posts'));
 
 mongoose.set('strictQuery', false);
 mongoose.connect(process.env.MONGO_URL,
@@ -25,5 +29,12 @@ mongoose.connect(process.env.MONGO_URL,
             console.log("connected to db");
         }
     }))
+
+    //handlling all requiest
+
+//handlling all bad requiest
+app.use('/*', (req, res) => {
+    return res.status(400).send({ msg: "No more response" })
+})
 
 app.listen(port, () => console.log(`listening on port ${port}!`))

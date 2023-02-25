@@ -23,7 +23,7 @@ route.post('/',
         try {
             let user = await User.findOne({ email });
             if (user) {
-                res.send({ errors: [{ msg: 'User Already exit' }] });
+               return  res.send({ errors: [{ msg: 'User Already exit' }] });
             }
             //getting avatar of the user
             const avatar = gravatar.url(email, {
