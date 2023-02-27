@@ -199,7 +199,7 @@ route.delete('/educations/:id', auth, async (req, res) => {
         console.log(data);
         if (userinfo.education.indexOf(data) != -1) {
             console.log("Reached here");
-            await userinfo.education.splice(0, 1)
+            await userinfo.education.splice(removeIndex, 1)
         }
         await userinfo.save();
         // console.log("Rewached here",removeIndex);
