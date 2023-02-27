@@ -118,16 +118,16 @@ route.post('/experience', auth, [check('title', 'title is required').not().isEmp
         if (!errors.isEmpty()) return res.status(404).send({ errors: errors });
         const { title, company, location, from, to, current, description } = req.body;
 
-        const updates = [{
+        const updates = {
             title: title, company: company, location: location, from: from, to: to, current: current, description: description
-        }];
+        };
 
         const users = await Profile.findOne({ user: req.user.id });
         if (!users) return res.status(404).send({ msg: 'No Profile found for this user' });
-        console.log(users);
-        users.experience = updates;
-        users.save();
-        return res.status(200).send({ msg: 'Updated Successfully' });
+        
+        users.experience.unshift(updates);
+        await users.save();
+        return res.status(200).send({ msg: 'Inserted' });
         // const result = await Profile.findOneAndUpdate({ user: req.user.id }, updates)
         // console.log(result);
     } catch (err) {
@@ -147,7 +147,7 @@ route.delete('/experiences/:id', auth, async (req, res) => {
         if (remove === -1) return res.send({ msg: 'No Experience for this user' });
         profiles.experience.slice(remove, 1);
         profiles.save();
-        res.send({ msg: 'experience removed' })
+        res.send({ msg: 'experience removed',profiles })
     }
     catch (err) {
         console.log(err)
