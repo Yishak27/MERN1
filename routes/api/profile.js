@@ -238,7 +238,7 @@ route.get('/github/:username', (req, res) => {
         request(option, (err, response, body) => {
             if (err) console.log({ err: err })
             if (response.statusCode !== 200) {
-                return res.send({ msg: 'no profiles' })
+                return res.status(404).send({ msg: 'no profiles' })
             }
             res.status(200).send(body);
         })
