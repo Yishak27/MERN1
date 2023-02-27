@@ -10,7 +10,7 @@ const UserSchema = require('../../module/UserSchema');
 //getting specific user profile
 route.get('/me', auth, async (req, res) => {
     try {
-        const result = await Profile.findOne({ user: req.user.id }).populate({ path: 'user' }).exec();
+        const result = await Profile.findOne({ user: req.user.id }).populate({ path: 'user' });
         if (!result) return res.status(400).send({ msg: 'there is no profile for this user' });
         return res.send(result);
     } catch (err) {
@@ -125,7 +125,7 @@ route.post('/experience', auth, [check('title', 'title is required').not().isEmp
         const users = await Profile.findOne({ user: req.user.id });
         if (!users) return res.status(404).send({ msg: 'No Profile found for this user' });
         
-        users.experience.unshift(updates);
+        users.experience.push(updates);
         await users.save();
         return res.status(200).send({ msg: 'Inserted' });
         // const result = await Profile.findOneAndUpdate({ user: req.user.id }, updates)
@@ -145,16 +145,73 @@ route.delete('/experiences/:id', auth, async (req, res) => {
             .map(item => item.id)
             .indexOf(req.params.id);
         if (remove === -1) return res.send({ msg: 'No Experience for this user' });
-        profiles.experience.slice(remove, 1);
+        profiles.experience.splice(remove, 1);
         profiles.save();
-        res.send({ msg: 'experience removed',profiles })
+        res.send({ msg: 'experience removed' })
+    }
+    catch (err) {   
+        console.log(err)
+        return res.status(500).send({ msg: 'Server Error' })
+    }
+})
+
+
+//adding profiles Education
+route.post('/education', auth, [check('school', 'school is required').not().isEmpty()], async (req, res) => {
+    try {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) return res.status(404).send({ errors: errors });
+        const { school, degree, fieldofstudy, from, to, current, description } = req.body;
+
+        const educations = {
+            school: school, degree: degree, fieldofstudy: fieldofstudy, from: from, to: to, current: current, description: description
+        };
+
+        const users = await Profile.findOne({ user: req.user.id });
+        if (!users) return res.status(404).send({ msg: 'No Profile found for this user' });
+        
+        users.education.unshift(educations);
+        await users.save();
+        return res.status(200).send({ msg: 'Education Inserted' });
+        // const result = await Profile.findOneAndUpdate({ user: req.user.id }, updates)
+        // console.log(result);
+    } catch (err) {
+        console.log(err);
+        return res.status(500).send('server error');
+    }
+})
+
+//deleting the Education
+route.delete('/educations/:id', auth, async (req, res) => {
+    try {
+        let userinfo = await Profile.findOne({ user: req.user.id });
+        if (!userinfo) return res.status(400).send({ msg: 'No profile for this user' });
+        let data;
+        const removeIndex = userinfo.education
+            .map(item => {
+                if(item.id == req.params.id){
+                    data  = item;
+                    return item;
+                }
+                })
+        console.log(data);
+        if(userinfo.education.indexOf(data) !=-1){
+            console.log("Reached here");
+            await userinfo.education.splice(0,1)
+        }
+        await userinfo.save();
+        // console.log("Rewached here",removeIndex);
+        // if (removeIndex === -1) return res.send({ msg: 'No Education for this user' });
+        //  const use =  userinfo.education.slice(removeIndex,1);
+        //  //console.log(use);
+        // await userinfo.save();
+        res.send({ msg: 'Education removed'})
     }
     catch (err) {
         console.log(err)
         return res.status(500).send({ msg: 'Server Error' })
     }
 })
-
 //delete profile by id
 route.delete('/:userid', auth, async (req, res) => {
     try {
