@@ -13,9 +13,13 @@ const UserSchema = new mongoose.Schema({
         required: true,
     }, avatar: {
         type: String
-    }, date: {
+    }
+    , date: {
         type: Date,
         default: Date.now
+    },
+    token :{
+        type: String
     }
 });
 

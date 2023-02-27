@@ -3,8 +3,8 @@ const route = express.Router();
 const User = require('../../module/UserSchema');
 const gravatar = require('gravatar');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const { check, validationResult } = require('express-validator');
-
 
 route.post('/',
     [
@@ -23,7 +23,7 @@ route.post('/',
         try {
             let user = await User.findOne({ email });
             if (user) {
-                res.send({ errors: [{ msg: 'User Already exit' }] });
+               return  res.send({ errors: [{ msg: 'User Already exit' }] });
             }
             //getting avatar of the user
             const avatar = gravatar.url(email, {
@@ -38,15 +38,20 @@ route.post('/',
                 avatar,
             });
 
-            //encript password
+            //encrypt password
             const salt = await bcrypt.genSalt(10);
             user.password = await bcrypt.hash(password, salt);
-            console.log(user.password);
-            console.log(user);
+            const payload = {
+                user: { id: user.id }
+            }
+            const token = await jwt.sign(payload, process.env.JWT_TOKEN)
+            //     , {
+            //     expiresIn: process.env.EXP_TIME
+            // })
             //save to db
+            user.token = token;
             user.save();
-            res.send("User Registed");
-            next();
+            res.send(user);
         } catch (err) {
             console.log(err);
             res.status(500).send("Server Error");
@@ -54,7 +59,7 @@ route.post('/',
     })
 
 route.get('/', async (req, res) => {
-    let user = await User.find()
+    let user = await User.find().select('-password');
     res.send(user);
 })
 
