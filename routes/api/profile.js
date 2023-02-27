@@ -6,6 +6,8 @@ const User = require('../../module/UserSchema');
 const { check, validationResult, Result } = require('express-validator');
 const mongoose = require('mongoose');
 const UserSchema = require('../../module/UserSchema');
+const request = require('request');
+
 
 //getting specific user profile
 route.get('/me', auth, async (req, res) => {
@@ -124,7 +126,7 @@ route.post('/experience', auth, [check('title', 'title is required').not().isEmp
 
         const users = await Profile.findOne({ user: req.user.id });
         if (!users) return res.status(404).send({ msg: 'No Profile found for this user' });
-        
+
         users.experience.push(updates);
         await users.save();
         return res.status(200).send({ msg: 'Inserted' });
@@ -149,7 +151,7 @@ route.delete('/experiences/:id', auth, async (req, res) => {
         profiles.save();
         res.send({ msg: 'experience removed' })
     }
-    catch (err) {   
+    catch (err) {
         console.log(err)
         return res.status(500).send({ msg: 'Server Error' })
     }
@@ -169,7 +171,7 @@ route.post('/education', auth, [check('school', 'school is required').not().isEm
 
         const users = await Profile.findOne({ user: req.user.id });
         if (!users) return res.status(404).send({ msg: 'No Profile found for this user' });
-        
+
         users.education.unshift(educations);
         await users.save();
         return res.status(200).send({ msg: 'Education Inserted' });
@@ -189,15 +191,15 @@ route.delete('/educations/:id', auth, async (req, res) => {
         let data;
         const removeIndex = userinfo.education
             .map(item => {
-                if(item.id == req.params.id){
-                    data  = item;
+                if (item.id == req.params.id) {
+                    data = item;
                     return item;
                 }
-                })
+            })
         console.log(data);
-        if(userinfo.education.indexOf(data) !=-1){
+        if (userinfo.education.indexOf(data) != -1) {
             console.log("Reached here");
-            await userinfo.education.splice(0,1)
+            await userinfo.education.splice(0, 1)
         }
         await userinfo.save();
         // console.log("Rewached here",removeIndex);
@@ -205,7 +207,7 @@ route.delete('/educations/:id', auth, async (req, res) => {
         //  const use =  userinfo.education.slice(removeIndex,1);
         //  //console.log(use);
         // await userinfo.save();
-        res.send({ msg: 'Education removed'})
+        res.send({ msg: 'Education removed' })
     }
     catch (err) {
         console.log(err)
@@ -223,6 +225,25 @@ route.delete('/:userid', auth, async (req, res) => {
             return res.status(201).send({ msg: 'There is no profile' })
         }
         return res.send(500).json({ msg: 'server error' });
+    }
+})
+
+route.get('/github/:username', (req, res) => {
+    try {
+        const option = {
+            uri: `https://api.github.com/users/${req.params.username}/repos?per_page=5&sort=create aces&cliend_id=${process.env.GIT_CLIENT_ID}&client_secret=${process.env.GIT_SECRET}`,
+            method: 'GET',
+            headers: { 'user-agent': 'node.js' }
+        };
+        request(option, (err, response, body) => {
+            if (err) console.log({ err: err })
+            if (response.statusCode !== 200) {
+                return res.send({ msg: 'no profiles' })
+            }
+            res.status(200).send(body);
+        })
+    } catch (err) {
+        return res.status(500).send({ msg: err })
     }
 })
 module.exports = route;
