@@ -2,7 +2,7 @@ import React from 'react'
 
 const Navbar = () => {
     return (
-        <nav class="navbar bg-dark shadow ">
+        <nav class="navbar bg-dark sha">
             <h1>
                 <a href="index.html"><i class="fas fa-code"></i> Dev App</a>
             </h1>
