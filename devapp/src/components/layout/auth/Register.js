@@ -1,45 +1,91 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
-
+import axios from 'axios';
 const Register = () => {
+  const [fetchData, setFetchData] = useState({
+    name: "",
+    email: "",
+    password: "",
+    confirm: ""
+  });
+  const { name, email, password, confirm } = fetchData;
+
+  const onChange = e => setFetchData({ ...fetchData, [e.target.name]: e.target.value });
+
+  const onSubmit = async e => {
+    e.preventDefault();
+    if (password !== confirm) {
+      console.log('Password is not matched');
+    } else {
+      // asign the fetch data
+      const newUser = { name, email, password };
+      try {
+        //creating config
+        const config = {
+          headers:{'Content-Type':'application/json',
+          'Access-Control-Allow-Origin': '*',
+          "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS"}
+        };
+        const body = JSON.stringify(newUser);
+        const res = await axios.post('http://localhost:5000/API/user/', body, config);
+        console.log(res.data);
+      } catch (err) {
+        console.log(err);
+        throw err;
+      }
+    }
+  }
+  
   return (
     <div>
       <section className="container">
-      <h1 className="large text-primary">Sign Up</h1>
-      <p className="lead"><i className="fas fa-user"></i> Create Your Account</p>
-      <form className="form" action="create-profile.html">
-        <div className="form-group">
-          <input type="text" placeholder="Name" name="name" required />
-        </div>
-        <div className="form-group">
-          <input type="email" placeholder="Email Address" name="email" />
-          <small className="form-text"
+        <h1 className="large text-primary">Sign Up</h1>
+        <p className="lead"><i className="fas fa-user"></i> Create Your Account</p>
+        <form className="form" onSubmit={e => onSubmit(e)}>
+          <div className="form-group">
+            <input type="text" placeholder="Name" name="name"
+              value={name}
+              onChange={e => onChange(e)}
+              required />
+          </div>
+          <div className="form-group">
+            <input type="email"
+              placeholder="Email Address"
+              name="email"
+              value={email}
+              onChange={e => onChange(e)} />
+
+            <small className="form-text"
             >This site uses Gravatar so if you want a profile image, use a
-            Gravatar email</small
-          >
-        </div>
-        <div className="form-group">
-          <input
-            type="password"
-            placeholder="Password"
-            name="password"
-            minLength="6"
-          />
-        </div>
-        <div className="form-group">
-          <input
-            type="password"
-            placeholder="Confirm Password"
-            name="password2"
-            minLength="6"
-          />
-        </div>
-        <input type="submit" className="btn btn-primary" value="Register" />
-      </form>
-      <p className="my-1">
-        Already have an account? <Link to="/login">Sign In</Link>
-      </p>
-    </section>
+              Gravatar email</small
+            >
+          </div>
+          <div className="form-group">
+            <input
+              type="password"
+              placeholder="Password"
+              name="password"
+              minLength="6"
+              value={password}
+              onChange={e => onChange(e)}
+            />
+          </div>
+          <div className="form-group">
+            <input
+              type="password"
+              placeholder="Confirm Password"
+              name="confirm"
+              minLength="6"
+              value={confirm}
+              onChange={e => onChange(e)}
+            />
+          </div>
+          <input type="submit" className="btn btn-primary" value="Register" />
+        </form>
+        <p className="my-1">
+          Already have an account? <Link to="/login">Sign In</Link>
+        </p>
+      </section>
     </div>
   )
 }

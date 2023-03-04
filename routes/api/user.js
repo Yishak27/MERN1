@@ -51,7 +51,7 @@ route.post('/',
             //save to db
             user.token = token;
             user.save();
-            res.send(user);
+            res.send(user.token);
         } catch (err) {
             console.log(err);
             res.status(500).send("Server Error");
