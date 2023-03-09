@@ -5,9 +5,7 @@ import Navbar from './components/layout/Navbar';
 import Landing from './components/layout/Landing';
 import Login from './components/layout/auth/Login';
 import Register from './components/layout/auth/Register';
-
-//imporing redux
-import { Provider } from 'react-redux';
+import {Provider} from 'react-redux'
 import store from './source';
 
 function App() {
