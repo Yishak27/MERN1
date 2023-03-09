@@ -1,7 +1,13 @@
-import React, { useState } from 'react'
+import React, { Fragment, useState } from 'react'
 import { Link } from 'react-router-dom'
 import axios from 'axios';
-const Register = () => {
+
+import { setAlert } from '../../../action/alert'
+import { connect } from 'react-redux'
+import PropTypes from 'prop-types'
+
+
+const Register = (props) => {
   const [fetchData, setFetchData] = useState({
     name: "",
     email: "",
@@ -15,16 +21,18 @@ const Register = () => {
   const onSubmit = async e => {
     e.preventDefault();
     if (password !== confirm) {
-      console.log('Password is not matched');
+      props.setAlert('Password is not matched','danger');
     } else {
       // asign the fetch data
       const newUser = { name, email, password };
       try {
         //creating config
         const config = {
-          headers:{'Content-Type':'application/json',
-          'Access-Control-Allow-Origin': '*',
-          "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS"}
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+            "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS"
+          }
         };
         const body = JSON.stringify(newUser);
         const res = await axios.post('http://localhost:5000/API/user/', body, config);
@@ -35,9 +43,9 @@ const Register = () => {
       }
     }
   }
-  
+
   return (
-    <div>
+    <Fragment>
       <section className="container">
         <h1 className="large text-primary">Sign Up</h1>
         <p className="lead"><i className="fas fa-user"></i> Create Your Account</p>
@@ -86,8 +94,11 @@ const Register = () => {
           Already have an account? <Link to="/login">Sign In</Link>
         </p>
       </section>
-    </div>
+    </Fragment>
   )
 }
 
-export default Register
+Register.propTypes = {
+  setAlert: PropTypes.func.isRequired,
+}
+export default connect(null,{setAlert})(Register)
