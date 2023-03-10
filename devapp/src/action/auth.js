@@ -6,11 +6,10 @@ export const register = ({name, email, password}) => async dispach => {
     const config = {
         header: {
             'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*',
             "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS"
         }
     }
-    const body = JSON.stringify({ name, email, password })
+    const body = { name, email, password }
     try {
         const res = await axios.post('http://localhost:5000/API/user/', body, config);
         dispach({

@@ -15,6 +15,7 @@ route.post('/',
     ],
     async (req, res, next) => {
         //check validation
+        console.log(req.body);
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).send({ errors: errors.array() });
