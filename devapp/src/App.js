@@ -16,12 +16,15 @@ function App() {
   return (
     <Provider store={store}>
       <Navbar />
-      <Alert></Alert>
-      <Routes>
-        <Route path="/" element={<Landing />} />
-        <Route path="/" element={<Landing />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} /></Routes>
+      <div style={{ marginTop: 30 }}>
+        <Alert></Alert>
+      </div>
+      <section>
+        <Routes>
+          <Route path="/" element={<Landing />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} /></Routes>
+      </section>
     </Provider>
   );
 }

@@ -27,6 +27,5 @@
     "nodemon": "^2.0.20",
     "request": "^2.88.2",
     "uuid": "^9.0.0"
-  },
-  "proxy": "http://localhost:5000"
+  }
 }
