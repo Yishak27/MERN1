@@ -4,10 +4,8 @@ import { Link } from 'react-router-dom';
 import { setAlert } from '../../../action/alert';
 import { register } from '../../../action/auth';
 
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
 
-const Register = ({ setAlert, register }) => {
+const Register = () => {
   const [fetchData, setFetchData] = useState({
     name: '',
     email: '',
@@ -18,10 +16,13 @@ const Register = ({ setAlert, register }) => {
   const onChange = (e) =>
     setFetchData({ ...fetchData, [e.target.name]: e.target.value });
 
+// use redux
+const dispatch = useDispatch();
+
   const onSubmit = async (e) => {
     e.preventDefault();
     if (password !== confirm) {
-      setAlert('Password is not matched', 'danger');
+      dispatch(setAlert('Password is not matched', 'danger'));
     } else {
       register({ name, email, password });
     }
@@ -89,8 +90,4 @@ const Register = ({ setAlert, register }) => {
   );
 };
 
-Register.propTypes = {
-  setAlert: PropTypes.func.isRequired,
-  register: PropTypes.func.isRequired,
-};
-export default connect(null, { setAlert, register })(Register);
+export default Register;
