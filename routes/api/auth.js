@@ -9,7 +9,7 @@ const { check, validationResult } = require('express-validator');
 route.get('/', auth, async (req, res) => {
   try {
     const users = await user.findById(req.user.id).select('-password');
-    res.json(users);
+    return res.json(users);
   } catch (err) {
     return res.send('Unable to get the user data');
   }
@@ -32,17 +32,17 @@ route.post(
     try {
       let user = await User.findOne({ email });
       if (!user) {
-        res.send({ errors: [{ msg: 'Invalid Credential' }] });
+        return res.send({ errors: [{ msg: 'Invalid Credential' }] });
       }
       //check the password validation
       const isValid = await bcrypt.compare(password, user.password);
       if (!isValid) {
-        res.send({ errors: [{ msg: 'Invalid Credential' }] });
+        return res.send({ errors: [{ msg: 'Invalid Credential' }] });
       }
-      res.json(user.token);
+      return res.json(user.token);
     } catch (err) {
       console.log(err);
-      res.status(500).send('Server Error');
+      return res.status(500).send('Server Error');
     }
   }
 );

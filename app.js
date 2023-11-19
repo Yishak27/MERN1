@@ -24,7 +24,7 @@ mongoose.connect(process.env.MONGO_URL,
     { useNewUrlParser: true },
     (err => {
         if (err) {
-            console.log("error on db connection");
+            console.log("error on db connection",err);
         } else {
             console.log("connected to db");
         }
