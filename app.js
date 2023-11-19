@@ -30,8 +30,6 @@ mongoose.connect(process.env.MONGO_URL,
         }
     }))
 
-    //handlling all requiest
-
 //handlling all bad requiest
 app.use('/*', (req, res) => {
     return res.status(400).send({ msg: "No more response" })
