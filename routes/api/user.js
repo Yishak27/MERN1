@@ -14,8 +14,8 @@ route.post('/',
         check('password', 'minimum lenght is 6').isLength({ min: 6 })
     ],
     async (req, res, next) => {
+
         //check validation
-        console.log(req.body);
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).send({ errors: errors.array() });
@@ -55,7 +55,7 @@ route.post('/',
             res.send(user.token);
         } catch (err) {
             console.log(err);
-            res.status(500).send("Server Error");
+            return res.status(500).send("Server Error");
         };
     })
 
