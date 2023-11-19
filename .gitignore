@@ -1,4 +1,4 @@
 node_modules/
-config.env
 devapp/node_modules/
 devconnector_html_theme/
+*.env

@@ -3,7 +3,8 @@ import { Link } from 'react-router-dom';
 
 import { setAlert } from '../../../action/alert';
 import { register } from '../../../action/auth';
-
+import { useDispatch } from 'react-redux';
+import { REGISTER_SUCCESS } from '../../../action/constant';
 
 const Register = () => {
   const [fetchData, setFetchData] = useState({
@@ -16,15 +17,18 @@ const Register = () => {
   const onChange = (e) =>
     setFetchData({ ...fetchData, [e.target.name]: e.target.value });
 
-// use redux
-const dispatch = useDispatch();
-
+  // use redux
+  const dispatch = useDispatch();
   const onSubmit = async (e) => {
     e.preventDefault();
     if (password !== confirm) {
       dispatch(setAlert('Password is not matched', 'danger'));
     } else {
-      register({ name, email, password });
+      const res = await register({ name, email, password });
+      console.log(res);
+      if (res.errors[0])
+        dispatch(setAlert(res.errors[0].msg, 'danger'));
+      else dispatch(setAlert(REGISTER_SUCCESS, 'success'));
     }
   };
 
