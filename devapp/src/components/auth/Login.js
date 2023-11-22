@@ -36,13 +36,13 @@ const Login = () => {
         config
       );
       if (res.data.errors) {
-        enqueueSnackbar('Unable to login', 'danger');
+        enqueueSnackbar('Unable to login', {variant:'error'});
       } else {
-        enqueueSnackbar('Login Successfully', 'success');
+        enqueueSnackbar('Login Successfully', {variant:'success'});
         
       }
     } catch (err) {
-      enqueueSnackbar('Unable to loign', 'danger');
+      enqueueSnackbar('Unable to loign', {variant:'warning'});
      
     }
   };

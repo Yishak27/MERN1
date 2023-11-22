@@ -1,26 +1,11 @@
 import React, { Fragment, useState } from 'react';
 import { Link } from 'react-router-dom';
-
 import { register } from '../../action/auth';
-import Snackbar from '@mui/material/Snackbar';
-import MuiAlert from '@mui/material/Alert';
-import { Slide } from '@mui/material';
+import { useSnackbar } from 'notistack';
 
-const Alert = React.forwardRef(function Alert(props, ref) {
-  return <MuiAlert elevation={6} ref={ref} variant='filled' {...props} />;
-});
 
 const Register = () => {
-  const [open, setOpen] = useState(false);
-  const [message, setMessage] = useState('');
-
-  const handleClose = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-    setOpen(false);
-  };
-
+  const { enqueueSnackbar } = useSnackbar();
   const [fetchData, setFetchData] = useState({
     name: '',
     email: '',
@@ -35,27 +20,17 @@ const Register = () => {
   const onSubmit = async (e) => {
     e.preventDefault();
     if (password !== confirm) {
-      setMessage('Password not match');
-      setOpen(true);
+      enqueueSnackbar('Password Doesnt match', 'danger');
     } else {
       const res = await register({ name, email, password });
       console.log(res);
-      // if (res.errors[0])
-      //   dispatch(setAlert(res.errors[0].msg, 'danger'));
-      // else dispatch(setAlert('REGISTER_SUCCESS', 'success'));
+      if (res.errors[0]) enqueueSnackbar('User already exist', 'danger');
+      else enqueueSnackbar('Register Successfully', 'success');
     }
   };
 
   return (
     <Fragment>
-      <Snackbar
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-        open={open}
-        autoHideDuration={1000}
-        onClose={handleClose}
-        message={message}
-        translate={<Slide direction='down' />}
-      />
       <section className='container'>
         <h1 className='large text-primary'>Sign Up</h1>
         <p className='lead'>

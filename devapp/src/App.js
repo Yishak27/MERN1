@@ -14,7 +14,7 @@ import { SnackbarProvider } from 'notistack';
 function App() {
   return (
     <Provider store={store}>
-      <SnackbarProvider>
+      <SnackbarProvider autoHideDuration={3000}>
         <Navbar />
         <section>
           <Routes>
