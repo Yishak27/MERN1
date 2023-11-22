@@ -1,7 +1,5 @@
 import axios from 'axios';
 import { REGISTER_FAIL, REGISTER_SUCCESS } from './constant';
-import { setAlert } from './alert';
-import { useDispatch } from 'react-redux';
 
 export const register = async ({ name, email, password }) => {
   const config = {
@@ -17,7 +15,7 @@ export const register = async ({ name, email, password }) => {
       body,
       config
     );
-    console.log('from',res);
+    console.log('from', res);
     return res.data;
   } catch (err) {
     return null;

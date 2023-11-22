@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import Alert from '../Alert';
-import { useDispatch } from 'react-redux';
-import { setAlert } from '../../../action/alert';
+import { useSnackbar } from 'notistack';
 
 const Login = () => {
+  const { enqueueSnackbar } = useSnackbar();
   var data = {
     email: '',
     password: '',
@@ -13,16 +13,12 @@ const Login = () => {
   const [fetchData, setFetchData] = useState(data);
   const { email, password } = fetchData;
 
-  const onChange = (e) =>{
-    setFetchData({ ...fetchData, [e.target.name] : e.target.value });
-}
-
-// redux
-const dispatch = useDispatch();
+  const onChange = (e) => {
+    setFetchData({ ...fetchData, [e.target.name]: e.target.value });
+  };
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    // asign the fetch data
     const newUser = { email, password };
     try {
       //creating config
@@ -40,17 +36,17 @@ const dispatch = useDispatch();
         config
       );
       if (res.data.errors) {
-        dispatch(setAlert(res.data.errors[0].msg, 'danger'));
+        enqueueSnackbar('Unable to login', 'danger');
       } else {
-        dispatch(setAlert('Registed Successfully', 'success'));
-        console.log(res.data);
+        enqueueSnackbar('Login Successfully', 'success');
+        
       }
     } catch (err) {
-      dispatch(setAlert('Registed not done', 'danger'));
-      console.log(err);
-      throw err;
+      enqueueSnackbar('Unable to loign', 'danger');
+     
     }
   };
+
   return (
     <div>
       <section className='container'>
