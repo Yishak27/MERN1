@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import Alert from '../Alert';
 import { useSnackbar } from 'notistack';
+import { useDispatch, useSelector } from 'react-redux';
+import { login, logout } from '../../reducers/authSlice';
 
 const Login = () => {
   const { enqueueSnackbar } = useSnackbar();
@@ -16,6 +18,9 @@ const Login = () => {
   const onChange = (e) => {
     setFetchData({ ...fetchData, [e.target.name]: e.target.value });
   };
+  const { token, user, isAuthenticated } = useSelector((state) => state.user);
+
+  const dispatch = useDispatch();
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -36,14 +41,16 @@ const Login = () => {
         config
       );
       if (res.data.errors) {
-        enqueueSnackbar('Unable to login', {variant:'error'});
+        enqueueSnackbar('Unable to login', { variant: 'error' });
       } else {
-        enqueueSnackbar('Login Successfully', {variant:'success'});
-        
+        enqueueSnackbar('Login Successfully', { variant: 'success' });
+        // dispatch the auth
+        const tokens = res.data;
+        const user = req.user;
+        dispatch(login({ tokens, user }));
       }
     } catch (err) {
-      enqueueSnackbar('Unable to loign', {variant:'warning'});
-     
+      enqueueSnackbar('Unable to loign', { variant: 'warning' });
     }
   };
 

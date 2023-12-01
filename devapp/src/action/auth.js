@@ -15,7 +15,6 @@ export const register = async ({ name, email, password }) => {
       body,
       config
     );
-    console.log('from', res);
     return res.data;
   } catch (err) {
     return null;
